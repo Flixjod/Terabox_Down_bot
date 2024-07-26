@@ -284,8 +284,9 @@ def handle_message(message):
 
             video_size_mb = video_size / (1024 * 1024)
             
-            bot.send_video(os.getenv('DUMP_CHANNEL_ID'), open(video_path, 'rb'), caption=f"✨ {video_title}\n📀 {video_size_mb:.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
-            bot.send_video(chat_id, open(video_path, 'rb'), caption=f"✨ {video_title}\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
+            dump_channel_video = bot.send_video(os.getenv('DUMP_CHANNEL_ID'), open(video_path, 'rb'), caption=f"✨ {video_title}\n📀 {video_size_mb:.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
+            bot.copy_message(chat_id, os.getenv('DUMP_CHANNEL_ID'), dump_channel_video.message_id)
+
                       
             bot.send_sticker(chat_id, "CAACAgIAAxkBAAEZdwRmJhCNfFRnXwR_lVKU1L9F3qzbtAAC4gUAAj-VzApzZV-v3phk4DQE")
             bot.delete_message(chat_id, download_msg.message_id)
