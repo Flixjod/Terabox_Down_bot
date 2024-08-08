@@ -138,8 +138,9 @@ def upload_video(video_path, chat_id, message_id, progress_message_id, user_ment
                 bot.edit_message_text(progress, chat_id, message_id, parse_mode='HTML')
                 last_percentage_update = percentage
 
-       dump_channel_video = bot.send_video(os.getenv('DUMP_CHANNEL_ID'), open(video_path, 'rb'), caption=f"✨ {video_path.split('/')[-1]}\n📀 {video_size / (1024 * 1024):.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
-       bot.copy_message(chat_id, os.getenv('DUMP_CHANNEL_ID'), dump_channel_video.message_id)
+       dump_chat_id = os.getenv('DUMP_CHAT_ID')
+       dump_channel_video = bot.send_video(dump_chat_id, open(video_path, 'rb'), caption=f"✨ {video_path.split('/')[-1]}\n📀 {video_size / (1024 * 1024):.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
+       bot.copy_message(chat_id, dump_chat_id, dump_channel_video.message_id)
 
         # Optionally, delete the original download and progress messages
         bot.delete_message(chat_id, message_id)
