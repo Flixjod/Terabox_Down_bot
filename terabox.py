@@ -139,9 +139,7 @@ def upload_video(video_path, chat_id, message_id, progress_message_id, user_ment
                 last_percentage_update = percentage
 
        dump_channel_video = bot.send_video(os.getenv('DUMP_CHANNEL_ID'), open(video_path, 'rb'), caption=f"✨ {video_path.split('/')[-1]}\n📀 {video_size / (1024 * 1024):.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
-
-        # Copy the video message to the user
-        bot.copy_message(chat_id, dump_channel_id, dump_channel_video.message_id)
+       bot.copy_message(chat_id, os.getenv('DUMP_CHANNEL_ID'), dump_channel_video.message_id)
 
         # Optionally, delete the original download and progress messages
         bot.delete_message(chat_id, message_id)
