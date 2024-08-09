@@ -103,47 +103,6 @@ def download_video(url, chat_id, message_id, user_mention, user_id):
 
     return video_path, video_title, total_length
 
-def upload_video(video_path, chat_id, message_id, progress_message_id, user_mention, user_id):
-    video_size = os.path.getsize(video_path)
-    total_size = video_size
-    chunk_size = 4096
-    uploaded_length = 0
-
-    with open(video_path, 'rb') as video_file:
-        start_time = time()
-        last_percentage_update = 0
-
-        while True:
-            chunk = video_file.read(chunk_size)
-            if not chunk:
-                break
-
-            uploaded_length += len(chunk)
-            elapsed_time = time() - start_time
-            percentage = 100 * uploaded_length / total_size
-            speed = uploaded_length / elapsed_time
-
-            if percentage - last_percentage_update >= 7:  # update every 7%
-                progress = format_progress_bar(
-                    video_path.split('/')[-1],  # Use file name
-                    percentage,
-                    uploaded_length,
-                    total_size,
-                    'Uploading',
-                    speed,
-                    user_mention,
-                    user_id
-                )
-                bot.edit_message_text(progress, chat_id, message_id, parse_mode='HTML')
-                last_percentage_update = percentage
-
-dump_chat_id = os.getenv('DUMP_CHAT_ID')
-dump_channel_video = bot.send_video(dump_chat_id, open(video_path, 'rb'), caption=f"✨ {video_path.split('/')[-1]}\n📀 {video_size / (1024 * 1024):.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
-bot.copy_message(chat_id, dump_chat_id, dump_channel_video.message_id)
-bot.delete_message(chat_id, message_id) #User Promt
-bot.delete_message(chat_id, progress_message_id) #Progress
-
-os.remove(video_path)
 
 
 # Start command
@@ -323,8 +282,18 @@ def handle_message(message):
         try:
             video_path, video_title, video_size = download_video(video_url, chat_id, progress_msg.message_id, user_mention, user_id)
             bot.edit_message_text('sᴇɴᴅɪɴɢ ʏᴏᴜ ᴛʜᴇ ᴍᴇᴅɪᴀ...🤤', chat_id, progress_msg.message_id)
-            upload_video(video_path, chat_id, message.message_id, progress_msg.message_id, user_mention, user_id)
-  
+
+
+            video_size_mb = video_size / (1024 * 1024)
+
+            dump_channel_video = bot.send_video(os.getenv('DUMP_CHANNEL_ID'), open(video_path, 'rb'), caption=f"✨ {video_title}\n📀 {video_size_mb:.2f} MB\n👤 ʟᴇᴇᴄʜᴇᴅ ʙʏ : {user_mention}\n📥 ᴜsᴇʀ ʟɪɴᴋ: tg://user?id={user_id}", parse_mode='HTML')
+            bot.copy_message(chat_id, os.getenv('DUMP_CHANNEL_ID'), dump_channel_video.message_id)
+
+
+            bot.send_sticker(chat_id, "CAACAgIAAxkBAAEZdwRmJhCNfFRnXwR_lVKU1L9F3qzbtAAC4gUAAj-VzApzZV-v3phk4DQE")
+            bot.delete_message(chat_id, progress_msg.message_id)
+            bot.delete_message(chat_id, message.message_id)
+            os.remove(video_path)
         except Exception as e:
             bot.edit_message_text(f'Download failed: {str(e)}', chat_id, progress_msg.message_id)
     else:
