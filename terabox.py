@@ -323,8 +323,7 @@ def handle_message(message):
         try:
             video_path, video_title, video_size = download_video(video_url, chat_id, progress_msg.message_id, user_mention, user_id)
             bot.edit_message_text('sᴇɴᴅɪɴɢ ʏᴏᴜ ᴛʜᴇ ᴍᴇᴅɪᴀ...🤤', chat_id, progress_msg.message_id)
-
-       upload_video(video_path, chat_id, message.message_id, progress_msg.message_id, user_mention, user_id)
+            upload_video(video_path, chat_id, message.message_id, progress_msg.message_id, user_mention, user_id)
   
         except Exception as e:
             bot.edit_message_text(f'Download failed: {str(e)}', chat_id, progress_msg.message_id)
