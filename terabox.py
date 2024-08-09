@@ -103,7 +103,6 @@ def download_video(url, chat_id, message_id, user_mention, user_id):
 
     return video_path, video_title, total_length
 
-
 def upload_video(video_path, chat_id, message_id, progress_message_id, user_mention, user_id):
     video_size = os.path.getsize(video_path)
     total_size = video_size
