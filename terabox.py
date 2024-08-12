@@ -116,7 +116,8 @@ def send_welcome(message):
     if not users_collection.find_one({'user_id': user.id}):
         users_collection.insert_one({
             'user_id': user.id,
-            'first_name': user.first_name
+            'first_name': user.first_name,
+            'downloads': 0
         })
 
     inline_keyboard = telebot.types.InlineKeyboardMarkup()
@@ -291,6 +292,11 @@ def handle_message(message):
 
 
             bot.send_sticker(chat_id, "CAACAgIAAxkBAAEZdwRmJhCNfFRnXwR_lVKU1L9F3qzbtAAC4gUAAj-VzApzZV-v3phk4DQE")
+            users_collection.update_one(
+                {'user_id': user.id},
+                {'$inc': {'downloads': 1}},
+                upsert=True
+            )
             bot.delete_message(chat_id, progress_msg.message_id)
             bot.delete_message(chat_id, message.message_id)
             os.remove(video_path)
